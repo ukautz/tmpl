@@ -1,0 +1,11 @@
+<html>
+<head><title>Top 10 Go repos</title></head>
+<body>
+  <h1>Found {{ data.items | length }} repos</h1>
+  <ul>
+  {% for item in data.items | slice:"0:10" %}
+    <li>{{ item.full_name }} with {{ item.stargazers_count | integer }} stars</li>
+  {% endfor %}
+  </ul>
+</body>
+</html>
