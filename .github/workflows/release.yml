@@ -21,12 +21,20 @@ jobs:
       - name: Build binaries
         run: |
           make build GOOS=linux GOARCH=amd64 DIST=dist/tmpl.linux-amd64
-          make build GOOS=linux GOARCH=arm DIST=dist/tmpl.linux-arm
+          make build GOOS=linux GOARCH=arm64 DIST=dist/tmpl.linux-arm64
           make build GOOS=darwin GOARCH=amd64 DIST=dist/tmpl.darwin-amd64
-          make build GOOS=darwin GOARCH=arm DIST=dist/tmpl.darwin-arm
+          make build GOOS=darwin GOARCH=arm64 DIST=dist/tmpl.darwin-arm64
           make build GOOS=windows GOARCH=amd64 DIST=dist/tmpl.windows-amd64.exe
-          make build GOOS=windows GOARCH=arm DIST=dist/tmpl.windows-arm.exe
-      - run: |
+          make build GOOS=windows GOARCH=386 DIST=dist/tmpl.windows-386.exe
+      - name: Create archives
+        run: |
+          set -x
+          cd dist
+          for asset in ./tmpl.*; do
+            gzip --keep $asset
+          done
+      - name: Create release
+        run: |
           set -x
           assets=()
           for asset in ./dist/tmpl.*; do
