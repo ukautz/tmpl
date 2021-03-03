@@ -52,23 +52,23 @@ func TestRendererImports(t *testing.T) {
 	}
 }
 
-func TestSourceImports(t *testing.T) {
+func TestLocationImports(t *testing.T) {
 	for location, typ := range map[string]string{
-		"http://acme.tld":                        "tmpl.HTTPSource",
-		"shell://ps auxf":                        "shellwords.Source",
-		"file:///etc/config":                     "tmpl.FileSource",
-		filepath.Join("fixtures", "config-file"): "tmpl.FileSource",
-		"template:foo":                           "tmpl.TemplateRawSource",
-		"pongo:foo":                              "tmpl.TemplateRawSource",
-		"pongo2:foo":                             "tmpl.TemplateRawSource",
-		"envsubst:foo":                           "tmpl.TemplateRawSource",
-		"env:FOO_":                               "tmpl.OSEnvSource",
-		"-":                                      "tmpl.STDINSource",
+		"http://acme.tld":                        "tmpl.HTTPLocation",
+		"shell://ps auxf":                        "shellwords.Location",
+		"file:///etc/config":                     "tmpl.FileLocation",
+		filepath.Join("fixtures", "config-file"): "tmpl.FileLocation",
+		"template:foo":                           "tmpl.TemplateRawLocation",
+		"pongo:foo":                              "tmpl.TemplateRawLocation",
+		"pongo2:foo":                             "tmpl.TemplateRawLocation",
+		"envsubst:foo":                           "tmpl.TemplateRawLocation",
+		"env:FOO_":                               "tmpl.OSEnvLocation",
+		"-":                                      "tmpl.STDINLocation",
 	} {
-		source, err := tmpl.GuessSource(location)
-		assert.Nil(t, err, "Guess source for \"%s\" should work", location)
-		assert.NotNil(t, source, "Guess source \"%s\" should be created", location)
-		rtyp := reflect.TypeOf(source).String()
-		assert.Equal(t, typ, rtyp, "Guessed source \"%s\" should be \"%s\" but is \"%s\"", location, typ, rtyp)
+		loc, err := tmpl.GuessLocation(location)
+		assert.Nil(t, err, "Guess location for \"%s\" should work", location)
+		assert.NotNil(t, loc, "Guess location \"%s\" should be created", location)
+		rtyp := reflect.TypeOf(loc).String()
+		assert.Equal(t, typ, rtyp, "Guessed location \"%s\" should be \"%s\" but is \"%s\"", location, typ, rtyp)
 	}
 }

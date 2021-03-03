@@ -1,4 +1,4 @@
-// Package tmpl implements template generation and variable substition from a large set of data sources
+// Package tmpl implements template generation and variable substition from a large set of data locations
 package tmpl
 
 import (
@@ -8,26 +8,26 @@ import (
 
 // Tmpl is a facade for the template generation process. It creates (partially best guesses)
 type Tmpl struct {
-	Data     Source
+	Data     Location
 	Decoder  Decoder
 	Renderer Renderer
-	Template Source
+	Template Location
 }
 
 // Build constructs the Tmpl facade from names of components
-func Build(dataSource, decoderName, templateSource, rendererName string) (*Tmpl, error) {
-	if dataSource == "-" && dataSource == templateSource {
+func Build(dataLocation, decoderName, templateLocation, rendererName string) (*Tmpl, error) {
+	if dataLocation == "-" && dataLocation == templateLocation {
 		return nil, errors.New("cannot use STDIN for data and template at the same time")
 	}
 
-	data, err := GuessSource(dataSource)
+	data, err := GuessLocation(dataLocation)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create data source: %w", err)
+		return nil, fmt.Errorf("failed to create data location: %w", err)
 	}
 
 	var decoder Decoder
 	if decoderName == "guess" {
-		decoder, err = GuessDecoder(dataSource)
+		decoder, err = GuessDecoder(dataLocation)
 	} else {
 		decoder, err = BuildDecoder(decoderName)
 	}
@@ -35,19 +35,19 @@ func Build(dataSource, decoderName, templateSource, rendererName string) (*Tmpl,
 		return nil, fmt.Errorf("failed to create data decoder: %w", err)
 	}
 
-	template, err := GuessSource(templateSource)
+	template, err := GuessLocation(templateLocation)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create data location: %w", err)
+		return nil, fmt.Errorf("failed to create template location: %w", err)
 	}
 
 	var renderer Renderer
 	if rendererName == "guess" {
-		renderer, err = GuessRenderer(templateSource)
+		renderer, err = GuessRenderer(templateLocation)
 	} else {
 		renderer, err = BuildRenderer(rendererName)
 	}
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create renderer: %w", err)
 	}
 
 	return &Tmpl{

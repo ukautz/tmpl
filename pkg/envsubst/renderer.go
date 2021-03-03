@@ -2,7 +2,6 @@ package envsubst
 
 import (
 	"fmt"
-	"log"
 	"reflect"
 	"regexp"
 
@@ -22,7 +21,6 @@ func (r Renderer) Render(data interface{}, templateData []byte) ([]byte, error) 
 	}
 
 	template, err := envsubst.Eval(string(templateData), func(key string) string {
-		log.Printf("TEST REPLACE %s", key)
 		if val, ok := strMap[key]; ok {
 			return val
 		}

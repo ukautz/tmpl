@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"sort"
 	"strings"
@@ -13,12 +14,10 @@ import (
 )
 
 var Version = "0.1.0"
-var BuildCommit = "UNSET"
 
 const USAGE_HEAD = `tmpl renders documents from templates and structured data
 
  version     %s
- commit      %s
  source      https://github.com/ukautz/tmpl
 
 Arguments
@@ -27,14 +26,15 @@ Arguments
 
 const USAGE_FOOT = `
 
+SEE: https://github.com/ukautz/tmpl/blob/%s/README.md
+
 Data Locations:
 ---------------
 Multiple data locations are accepted:
-- Local files:
-  - file://<path-to-file> like: "file:///etc/config.json"
-  - /path/to/file, like "/etc/config.json" (must exist)
-- HTTP sources:
-  - like "https://domain.tld/file.json"
+- Local files, like:
+  - file://<path-to-file>, e.g.: "file:///etc/config.json"
+  - /path/to/file, e.g.: "/etc/config.json" (must exist)
+- HTTP URLs, like "https://domain.tld/file.json"
 - Environment variables:
   - without prefix, like "env:", will create data out of all environment variables
   - with prefix, like "env:APP_", will create data only of environment variables with given prefix
@@ -43,6 +43,7 @@ Multiple data locations are accepted:
 
 Decoders:
 ---------
+
 
 Template:
 ---------
@@ -55,16 +56,16 @@ Output:
 
 Documentation:
 --------------
-  https://github.com/ukautz/tmpl/blob/%s/README.md
+
+SEE: https://github.com/ukautz/tmpl/blob/%s/README.md
 `
 
 func fail(msg string) {
-	fmt.Printf("\033[1;31mFAILED: %s\033[0m\n\n", msg)
-	usage(1)
+	log.Fatal(msg)
 }
 
 func usage(exit int) {
-	fmt.Printf(USAGE_HEAD, Version, BuildCommit)
+	fmt.Printf(USAGE_HEAD, Version)
 	args := []string{}
 	for arg, val := range map[string]string{
 		"data":     "location",
@@ -81,7 +82,7 @@ func usage(exit int) {
 	sort.Strings(args)
 	fmt.Println(strings.Join(args, "\n"))
 	fmt.Printf("  %-30s  Show this help\n", "--help | -h")
-	fmt.Printf(USAGE_FOOT, Version)
+	fmt.Printf(USAGE_FOOT, Version, Version)
 	os.Exit(exit)
 }
 

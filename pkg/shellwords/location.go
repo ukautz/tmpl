@@ -9,11 +9,11 @@ import (
 	tmpl "github.com/ukautz/tmpl/pkg"
 )
 
-type Source []string
+type Location []string
 
 var Parser = shellwords.NewParser()
 
-func (s Source) Load() ([]byte, error) {
+func (s Location) Load() ([]byte, error) {
 	name := s[0]
 	args := s[1:]
 	out := bytes.NewBuffer(nil)
@@ -25,17 +25,17 @@ func (s Source) Load() ([]byte, error) {
 	return out.Bytes(), nil
 }
 
-func NewSource(cmd string) (tmpl.Source, error) {
+func NewLocation(cmd string) (tmpl.Location, error) {
 	parts, err := Parser.Parse(cmd)
 	if err != nil {
 		return nil, err
 	}
-	return Source(parts), nil
+	return Location(parts), nil
 }
 
-func BuildSource(location string) tmpl.Source {
+func BuildLocation(location string) tmpl.Location {
 	if strings.HasPrefix(strings.ToLower(location), "shell://") {
-		if src, err := NewSource(location[len("shell://"):]); err == nil {
+		if src, err := NewLocation(location[len("shell://"):]); err == nil {
 			return src
 		}
 	}
@@ -43,5 +43,5 @@ func BuildSource(location string) tmpl.Source {
 }
 
 func init() {
-	tmpl.Sources = append(tmpl.Sources, BuildSource)
+	tmpl.Locations = append(tmpl.Locations, BuildLocation)
 }

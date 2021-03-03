@@ -7,12 +7,12 @@ import (
 	"regexp"
 )
 
-type HTTPSource string
+type HTTPLocation string
 
-var isHttpSource = regexp.MustCompile(`(?i)^https?://`)
+var isHttpLocation = regexp.MustCompile(`(?i)^https?://`)
 
-// Load tries to GET given URL and return it's body content. The source must respond with HTTP status code 200
-func (s HTTPSource) Load() ([]byte, error) {
+// Load tries to GET given URL and return it's body content. The location must respond with HTTP status code 200
+func (s HTTPLocation) Load() ([]byte, error) {
 	if res, err := http.Get(string(s)); err != nil {
 		return nil, fmt.Errorf("could not get \"%s\": %s", s, err)
 	} else if res.StatusCode != http.StatusOK {
@@ -24,13 +24,13 @@ func (s HTTPSource) Load() ([]byte, error) {
 	}
 }
 
-func BuildHTTPSource(location string) Source {
-	if isHttpSource.MatchString(location) {
-		return HTTPSource(location)
+func BuildHTTPLocation(location string) Location {
+	if isHttpLocation.MatchString(location) {
+		return HTTPLocation(location)
 	}
 	return nil
 }
 
 func init() {
-	Sources = append(Sources, BuildHTTPSource)
+	Locations = append(Locations, BuildHTTPLocation)
 }

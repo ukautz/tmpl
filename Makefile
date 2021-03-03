@@ -1,8 +1,7 @@
 
 
 _GIT_VERSION := $(shell git describe --tags --dirty)
-_GIT_COMMIT := $(shell git rev-parse --short HEAD)
-GO_BUILD_FLAGS ?= -ldflags "-X main.Version=$(_GIT_VERSION) -X main.BuildCommit=$(_GIT_COMMIT)"
+GO_BUILD_FLAGS ?= -ldflags "-X main.Version=$(_GIT_VERSION)"
 GO_BIN ?= go
 
 dist/tmpl:
