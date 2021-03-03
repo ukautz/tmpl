@@ -1,4 +1,1 @@
-vendor/
-glide.lock
-tmpl
-releases/
+dist/

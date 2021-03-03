@@ -1,0 +1,21 @@
+
+name: Test PRs
+
+on:
+  pull_request:
+    branches:
+      - master
+
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.16.0' # The Go version to download (if necessary) and use.
+      - run: go version
+      - run: make test

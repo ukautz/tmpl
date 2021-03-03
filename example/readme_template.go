@@ -1,9 +1,10 @@
+// +build example
 package main
 
 import (
-	"github.com/ukautz/tmpl/json"
 	"fmt"
-	"github.com/ukautz/tmpl/template"
+
+	tmpl "github.com/ukautz/tmpl/pkg"
 )
 
 var dataTemlpate = `{
@@ -27,11 +28,11 @@ var templateTemplate = `<VirtualHost {{.data.name}}:80>
 </VirtualHost>`
 
 func main() {
-	data, err := json.NewDecoder().Decode([]byte(dataTemlpate))
+	data, err := tmpl.NewJSONDecoder().Decode([]byte(dataTemlpate))
 	if err != nil {
 		panic(err)
 	}
-	renderer := &template.Renderer{}
+	renderer := &tmpl.TemplateRenderer{}
 	res, err := renderer.Render(data, []byte(templateTemplate))
 	if err != nil {
 		panic(err)
