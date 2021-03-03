@@ -1,0 +1,38 @@
+
+name: Upload Release Asset
+
+on:
+  push:
+    tags:
+    - 'v*'
+
+
+jobs:
+  release:
+    name: Upload Release Asset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.16.0' # The Go version to download (if necessary) and use.
+      - run: go version
+      - name: Build binaries
+        run: |
+          make build GOOS=linux GOARCH=amd64 DIST=dist/tmpl.linux-amd64
+          make build GOOS=linux GOARCH=arm DIST=dist/tmpl.linux-arm
+          make build GOOS=darwin GOARCH=amd64 DIST=dist/tmpl.darwin-amd64
+          make build GOOS=darwin GOARCH=arm DIST=dist/tmpl.darwin-arm
+          make build GOOS=windows GOARCH=amd64 DIST=dist/tmpl.windows-amd64.exe
+          make build GOOS=windows GOARCH=arm DIST=dist/tmpl.windows-arm.exe
+      - run: |
+          set -x
+          assets=()
+          for asset in ./dist/tmpl.*; do
+            assets+=("-a" "$asset")
+          done
+          tag_name="${GITHUB_REF##*/}"
+          hub release create "${assets[@]}" -m "$tag_name" "$tag_name"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
