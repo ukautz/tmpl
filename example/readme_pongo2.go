@@ -1,9 +1,11 @@
+// +build example
 package main
 
 import (
 	"fmt"
-	"github.com/ukautz/tmpl/json"
-	"github.com/ukautz/tmpl/pongo2"
+
+	tmpl "github.com/ukautz/tmpl/pkg"
+	"github.com/ukautz/tmpl/pkg/pongo2"
 )
 
 var dataPongo2 = `{
@@ -27,7 +29,7 @@ var templatePongo = `<VirtualHost {{ data.name }}:80>
 </VirtualHost>`
 
 func main() {
-	data, err := json.NewDecoder().Decode([]byte(dataPongo2))
+	data, err := tmpl.NewJSONDecoder().Decode([]byte(dataPongo2))
 	if err != nil {
 		panic(err)
 	}
