@@ -27,37 +27,6 @@ Arguments
 const USAGE_FOOT = `
 
 SEE: https://github.com/ukautz/tmpl/blob/%s/README.md
-
-Data Locations:
----------------
-Multiple data locations are accepted:
-- Local files, like:
-  - file://<path-to-file>, e.g.: "file:///etc/config.json"
-  - /path/to/file, e.g.: "/etc/config.json" (must exist)
-- HTTP URLs, like "https://domain.tld/file.json"
-- Environment variables:
-  - without prefix, like "env:", will create data out of all environment variables
-  - with prefix, like "env:APP_", will create data only of environment variables with given prefix
-- Command execution:
-  - shell://<arbitrary-shell-command> like: "shell://ps auxf"
-
-Decoders:
----------
-
-
-Template:
----------
-
-Rendered:
----------
-
-Output:
--------
-
-Documentation:
---------------
-
-SEE: https://github.com/ukautz/tmpl/blob/%s/README.md
 `
 
 func fail(msg string) {
@@ -68,21 +37,24 @@ func usage(exit int) {
 	fmt.Printf(USAGE_HEAD, Version)
 	args := []string{}
 	for arg, val := range map[string]string{
-		"data":     "location",
-		"template": "location",
-		"renderer": "name",
-		"decoder":  "name",
-		"output":   "path",
+		"data-location":     "location",
+		"template-location": "location",
+		"renderer":          "name",
+		"decoder":           "name",
+		"output":            "path",
 	} {
 		a := pflag.Lookup(arg)
 		p := fmt.Sprintf("--%s | -%s <%s>", arg, a.Shorthand, val)
-		s := strings.Repeat(" ", 30-len(p))
+		s := ""
+		if dist := 30 - len(p); dist > 0 {
+			s = strings.Repeat(" ", 30-len(p))
+		}
 		args = append(args, fmt.Sprintf("  %s %s %s", p, s, a.Usage))
 	}
 	sort.Strings(args)
 	fmt.Println(strings.Join(args, "\n"))
 	fmt.Printf("  %-30s  Show this help\n", "--help | -h")
-	fmt.Printf(USAGE_FOOT, Version, Version)
+	fmt.Printf(USAGE_FOOT, Version)
 	os.Exit(exit)
 }
 
